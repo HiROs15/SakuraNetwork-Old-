@@ -1,13 +1,19 @@
 package dev.hiros;
 
+import java.lang.reflect.Field;
+import java.util.Map;
+
+import net.minecraft.server.v1_8_R1.EntityTypes;
+
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import dev.hiros.Commands.HubCommands.HubCommandManager;
+import dev.hiros.Commands.SakuraCommands.SakuraCommandManager;
 import dev.hiros.Hub.HubSetup;
 import dev.hiros.Hub.Events.HubEvents;
-import dev.hiros.Hub.HubBank.HubBank;
+import dev.hiros.Hub.HubBank.NMS.EntityBanker;
 
 public class SakuraNetwork extends JavaPlugin {
 	public static Plugin getInstance() {
@@ -22,12 +28,12 @@ public class SakuraNetwork extends JavaPlugin {
 		
 		setupEvents();
 		
-		//loadAllCustomMobs();
+		registerEntities();
 	}
 	
 	@Override
 	public void onDisable() {
-		removeAllCustomMobs();
+		
 	}
 	
 	//All startup methods
@@ -39,9 +45,48 @@ public class SakuraNetwork extends JavaPlugin {
 		
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public void registerEntities() {
+		//Register Banker
+		try {
+			Field c = EntityTypes.class.getDeclaredField("c");
+			Field d = EntityTypes.class.getDeclaredField("d");
+			Field e = EntityTypes.class.getDeclaredField("e");
+			Field f = EntityTypes.class.getDeclaredField("f");
+			Field g = EntityTypes.class.getDeclaredField("g");
+			
+			c.setAccessible(true);
+			d.setAccessible(true);
+			e.setAccessible(true);
+			f.setAccessible(true);
+			g.setAccessible(true);
+			
+			Map cmap = (Map) c.get(null);
+			Map dmap = (Map) d.get(null);
+			Map emap = (Map) e.get(null);
+			Map fmap = (Map) f.get(null);
+			Map gmap = (Map) g.get(null);
+			
+			cmap.put("Banker", EntityBanker.class);
+			dmap.put(EntityBanker.class, "Banker");
+			emap.put(120, EntityBanker.class);
+			fmap.put(EntityBanker.class, 120);
+			gmap.put("Banker", 120);
+			
+			c.set(null, cmap);
+			d.set(null, dmap);
+			e.set(null, emap);
+			f.set(null, fmap);
+			g.set(null, gmap);
+		} catch(Exception e){}
+	}
+	
 	public void setupCommands() {
 		//Hub Commands
 		getCommand("hub").setExecutor(new HubCommandManager());
+		
+		//Sakura Commands
+		getCommand("sakura").setExecutor(new SakuraCommandManager());
 	}
 	
 	public void setupEvents() {
@@ -49,15 +94,6 @@ public class SakuraNetwork extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new HubEvents(), this);
 	}
 	
-	public void loadAllCustomMobs() {
-		//Load the bankers when the server starts
-		HubBank.getInstance().loadBankers();
-	}
-	
 	//All Disable methods
-	public void removeAllCustomMobs() {
-		//Remove all bankers on shutdown
-		HubBank.getInstance().removeAllBankers();
-		
-	}
+	
 }

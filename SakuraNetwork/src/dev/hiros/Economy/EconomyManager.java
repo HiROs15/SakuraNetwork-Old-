@@ -28,4 +28,14 @@ public class EconomyManager {
 	public int getCredits(Player player) {
 		return SakuraNetwork.getInstance().getConfig().getInt("sakuranetwork.economy."+player.getUniqueId().toString()+".credits");
 	}
+	
+	public void setCoins(Player player, int value) {
+		SakuraNetwork.getInstance().getConfig().set("sakuranetwork.economy."+player.getUniqueId().toString()+".coins", value);
+		SakuraNetwork.getInstance().saveConfig();
+	}
+	
+	public void setCredits(Player player, int value) {
+		SakuraNetwork.getInstance().getConfig().set("sakuranetwork.economy."+player.getUniqueId().toString()+".credits", value);
+		SakuraNetwork.getInstance().saveConfig();
+	}
 }

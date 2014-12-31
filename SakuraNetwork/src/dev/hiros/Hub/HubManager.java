@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -48,6 +49,9 @@ public class HubManager {
 		
 		//Setup the hub scoreboard
 		HubScoreboard.getInstance().showHubScoreboard(player);
+		
+		//Set the hub texture pack
+		player.setResourcePack("http://sakurapack.x10.mx/SakuraNetworkHubPacke.zip");
 	}
 	
 	public void teleportPlayerToHub(Player player) {
@@ -84,6 +88,7 @@ public class HubManager {
 		player.getInventory().setItem(0, createItem(Material.SLIME_BALL, ChatColor.AQUA+"Quick Warp"));
 		player.getInventory().setItem(4, createItem(Material.EMERALD, ChatColor.GOLD+"Sakura Shop"));
 		player.getInventory().setItem(8, createItem(Material.REDSTONE_BLOCK, ChatColor.BLUE+"Settings"));
+		player.getInventory().setItem(2, createItem(Material.COAL, ChatColor.LIGHT_PURPLE+""+ChatColor.BOLD+"Coin"));
 	}
 	
 	public void setupHubBossBar(Player player) {
@@ -96,5 +101,32 @@ public class HubManager {
 		meta.setDisplayName(name);
 		item.setItemMeta(meta);
 		return item;
+	}
+	
+	public void dropSakuraCoin(Player player) {
+		if(EconomyManager.getInstance().getCoins(player) > 0) {
+			player.getInventory().setItem(2, createItem(Material.COAL, ChatColor.LIGHT_PURPLE+""+ChatColor.BOLD+"Coin"));
+			EconomyManager.getInstance().setCoins(player, EconomyManager.getInstance().getCoins(player)-1);
+			
+			//update the hub scoreboard
+			HubScoreboard.getInstance().removeHubScoreboard(player);
+			HubScoreboard.getInstance().showHubScoreboard(player);
+		}
+	}
+	
+	public void pickupSakuraCoin(final Player player, Item item, int ammount) {
+		EconomyManager.getInstance().setCoins(player, EconomyManager.getInstance().getCoins(player)+ammount);
+		
+		//Update the hub scoreboard
+		HubScoreboard.getInstance().removeHubScoreboard(player);
+		HubScoreboard.getInstance().showHubScoreboard(player);
+		
+		//reset the player inventory
+		SakuraNetwork.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(SakuraNetwork.getInstance(), new Runnable() {
+			public void run() {
+				player.getInventory().clear();
+				setupHubInventory(player);
+			}
+		}, 1L);
 	}
 }

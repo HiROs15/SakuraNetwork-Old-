@@ -3,3 +3,4 @@ main: dev.hiros.SakuraNetwork
 version: 1.0
 commands:
   hub:
+  sakura:
