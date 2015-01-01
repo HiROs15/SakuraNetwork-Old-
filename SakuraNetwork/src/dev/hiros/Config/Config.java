@@ -8,42 +8,36 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import dev.hiros.SakuraNetwork;
 
 public class Config {
-	private static String txtfile;
-	private static Config inst;
-	
-	private Config(String file) {
-		Config.txtfile = file;
+	private static Config inst = new Config();
+	public static Config getInstance() {
+		return inst;
 	}
 	
-	public static Config getInstance(String f) {
-		Config.inst = new Config(f);
-		return Config.inst;
-	}
-	
-	private FileConfiguration config = null;
 	private File file = null;
-	private String filename = Config.txtfile+".yml";
+	private FileConfiguration config = null;
 	
-	public void reloadConfig() {
+	public void reloadConfig(String path) {
 		if(file == null) {
-			file = new File(SakuraNetwork.getInstance().getDataFolder()+""+filename);
+			file = new File(SakuraNetwork.getInstance().getDataFolder()+path);
 		}
-			config = YamlConfiguration.loadConfiguration(file);
+		config = YamlConfiguration.loadConfiguration(file);
 	}
 	
-	public FileConfiguration getConfig() {
+	public FileConfiguration getConfig(String path) {
 		if(config == null) {
-			reloadConfig();
+			reloadConfig(path);
 		}
+		
 		return config;
 	}
 	
-	public void saveConfig() {
-		if(file == null) {
-			reloadConfig();
+	public void saveConfig(String path) {
+		if(file == null || config == null) {
+			reloadConfig(path);
 		}
+		
 		try {
 			config.save(file);
-		} catch(Exception e) {}
+		}catch(Exception e) {}
 	}
 }

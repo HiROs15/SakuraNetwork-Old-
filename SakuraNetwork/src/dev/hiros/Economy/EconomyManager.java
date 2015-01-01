@@ -1,9 +1,7 @@
 package dev.hiros.Economy;
 
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-
-import dev.hiros.SakuraNetwork;
+import dev.hiros.Config.Config;
 
 public class EconomyManager {
 	private static EconomyManager inst = new EconomyManager();
@@ -12,30 +10,32 @@ public class EconomyManager {
 	}
 	
 	public void setupEconomyForPlayer(Player player) {
-		Plugin plugin = SakuraNetwork.getInstance();
-		if(plugin.getConfig().getBoolean("sakuranetwork.economy."+player.getUniqueId().toString()+".setup") != true) {
-			plugin.getConfig().set("sakuranetwork.economy."+player.getUniqueId().toString()+".setup", true);
-			plugin.getConfig().set("sakuranetwork.economy."+player.getUniqueId().toString()+".coins", 0);
-			plugin.getConfig().set("sakuranetwork.economy."+player.getUniqueId().toString()+".credits", 500);
-			plugin.saveConfig();
+		String path = "/members/"+player.getUniqueId().toString()+".sakuradata";
+		if(Config.getInstance().getConfig(path).getBoolean("economy.setup") != true) {
+			Config.getInstance().getConfig(path).set("economy.setup", true);
+			Config.getInstance().getConfig(path).set("economy.credits", 500);
+			Config.getInstance().getConfig(path).set("economy.coins", 5);
+			Config.getInstance().saveConfig(path);
 		}
 	}
 	
 	public int getCoins(Player player) {
-		return SakuraNetwork.getInstance().getConfig().getInt("sakuranetwork.economy."+player.getUniqueId().toString()+".coins");
+		return Config.getInstance().getConfig("/members/"+player.getUniqueId().toString()+".sakuradata").getInt("economy.coins");
 	}
 	
 	public int getCredits(Player player) {
-		return SakuraNetwork.getInstance().getConfig().getInt("sakuranetwork.economy."+player.getUniqueId().toString()+".credits");
-	}
-	
-	public void setCoins(Player player, int value) {
-		SakuraNetwork.getInstance().getConfig().set("sakuranetwork.economy."+player.getUniqueId().toString()+".coins", value);
-		SakuraNetwork.getInstance().saveConfig();
+		return Config.getInstance().getConfig("/members/"+player.getUniqueId().toString()+".sakuradata").getInt("economy.credits");
 	}
 	
 	public void setCredits(Player player, int value) {
-		SakuraNetwork.getInstance().getConfig().set("sakuranetwork.economy."+player.getUniqueId().toString()+".credits", value);
-		SakuraNetwork.getInstance().saveConfig();
+		String path = "/members/"+player.getUniqueId().toString()+".sakuradata";
+		Config.getInstance().getConfig(path).set("economy.credits", value);
+		Config.getInstance().saveConfig(path);
+	}
+	
+	public void setCoins(Player player, int value) {
+		String path = "/members/"+player.getUniqueId().toString()+".sakuradata";
+		Config.getInstance().getConfig(path).set("economy.coins", value);
+		Config.getInstance().saveConfig(path);
 	}
 }

@@ -9,6 +9,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import dev.hiros.SakuraNetwork;
+import dev.hiros.Commands.SakuraCommands.Commands.Sakura_addcoins;
+import dev.hiros.Commands.SakuraCommands.Commands.Sakura_sakura;
 
 public class SakuraCommandManager implements CommandExecutor {
 	private static SakuraCommandManager inst = new SakuraCommandManager();
@@ -19,7 +21,7 @@ public class SakuraCommandManager implements CommandExecutor {
 	ArrayList<SakuraPluginCommand> cmds = new ArrayList<SakuraPluginCommand>();
 	
 	public SakuraCommandManager() {
-		
+		cmds.add(new Sakura_addcoins());
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -32,7 +34,8 @@ public class SakuraCommandManager implements CommandExecutor {
 		
 		if(cmd.getName().equalsIgnoreCase("sakura")) {
 			if(args.length == 0) {
-				
+				Sakura_sakura s = new Sakura_sakura();
+				s.onCommand(player, args);
 				return true;
 			}
 			

@@ -1,5 +1,6 @@
 package dev.hiros;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import dev.hiros.Commands.SakuraCommands.SakuraCommandManager;
 import dev.hiros.Hub.HubSetup;
 import dev.hiros.Hub.Events.HubEvents;
 import dev.hiros.Hub.HubBank.NMS.EntityBanker;
+import dev.hiros.ServerStats.Events.ServerStatsEvents;
 
 public class SakuraNetwork extends JavaPlugin {
 	public static Plugin getInstance() {
@@ -29,6 +31,8 @@ public class SakuraNetwork extends JavaPlugin {
 		setupEvents();
 		
 		registerEntities();
+		
+		setupDirectories();
 	}
 	
 	@Override
@@ -92,6 +96,16 @@ public class SakuraNetwork extends JavaPlugin {
 	public void setupEvents() {
 		//Hub Events
 		getServer().getPluginManager().registerEvents(new HubEvents(), this);
+		
+		//Server Ping Events
+		getServer().getPluginManager().registerEvents(new ServerStatsEvents(), this);
+	}
+	
+	public void setupDirectories() {
+		//Create members folder if it doesnt exist
+		File folder = new File(getDataFolder() + "/members");
+		folder.mkdir();
+		getServer().getLogger().info("Created members folder");
 	}
 	
 	//All Disable methods

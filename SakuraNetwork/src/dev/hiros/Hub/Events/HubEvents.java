@@ -1,27 +1,43 @@
 package dev.hiros.Hub.Events;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import dev.hiros.Economy.EconomyManager;
 import dev.hiros.Hub.HubChat;
 import dev.hiros.Hub.HubManager;
+import dev.hiros.Hub.HubBank.HubBank;
 
 public class HubEvents implements Listener {
 	@EventHandler
 	public void onPlayerLogin(PlayerJoinEvent event) {
 		HubManager.getInstance().joinHub(event.getPlayer());
+		event.setJoinMessage("");
+	}
+	
+	@EventHandler
+	public void onPlayerLogout(PlayerQuitEvent event) {
+		event.setQuitMessage("");
+		Player player = event.getPlayer();
+		if(HubManager.getInstance().getPlayer(player) != null) {
+			HubManager.getInstance().leaveHub(player);
+		}
 	}
 	
 	//Protection
@@ -46,6 +62,17 @@ public class HubEvents implements Listener {
 	public void onPlayerTakeDamage(EntityDamageEvent event) {
 		if(event.getEntity() instanceof Player) {
 			Player player = (Player) event.getEntity();
+			if(HubManager.getInstance().getPlayer(player) != null) {
+				event.setCancelled(true);
+				return;
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerDamageMob(EntityDamageByEntityEvent event) {
+		if(event.getDamager() instanceof Player) {
+			Player player = (Player) event.getDamager();
 			if(HubManager.getInstance().getPlayer(player) != null) {
 				event.setCancelled(true);
 			}
@@ -88,6 +115,9 @@ public class HubEvents implements Listener {
 				if(EconomyManager.getInstance().getCoins(player) <= 0) {
 					event.setCancelled(true);
 					player.sendMessage(ChatColor.GREEN+"SYSTEM> "+ChatColor.GRAY+"You do not have any coins.");
+					
+					//Play error sound only to player
+					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "playsound hub.error "+player.getName()+" "+player.getLocation().getX()+" "+player.getLocation().getY()+" "+player.getLocation().getZ()+" 100 1 1");
 					return;
 				}
 				HubManager.getInstance().dropSakuraCoin(player);
@@ -108,5 +138,19 @@ public class HubEvents implements Listener {
 			event.setCancelled(true);
 			return;
 		}
+	}
+	
+	@EventHandler
+	public void onPlayerRightClickOnMob(PlayerInteractEntityEvent event) {
+		Player player = event.getPlayer();
+		if(HubManager.getInstance().getPlayer(player) != null) {
+			if(event.getRightClicked().getType() == EntityType.VILLAGER && event.getRightClicked().getCustomName().equalsIgnoreCase(ChatColor.GOLD+""+ChatColor.BOLD+"Sakura Banker")) {
+				HubBank.getInstance().openBankerInv(player);
+				event.setCancelled(true);
+				return;
+			}
+			return;
+		}
+		return;
 	}
 }
