@@ -1,10 +1,6 @@
 package dev.hiros;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.util.Map;
-
-import net.minecraft.server.v1_8_R1.EntityTypes;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
@@ -14,7 +10,7 @@ import dev.hiros.Commands.HubCommands.HubCommandManager;
 import dev.hiros.Commands.SakuraCommands.SakuraCommandManager;
 import dev.hiros.Hub.HubSetup;
 import dev.hiros.Hub.Events.HubEvents;
-import dev.hiros.Hub.HubBank.NMS.EntityBanker;
+import dev.hiros.Hub.QuickWarp.QuickWarp;
 import dev.hiros.ServerStats.Events.ServerStatsEvents;
 
 public class SakuraNetwork extends JavaPlugin {
@@ -30,14 +26,14 @@ public class SakuraNetwork extends JavaPlugin {
 		
 		setupEvents();
 		
-		registerEntities();
-		
 		setupDirectories();
+		
+		hubEnableMethods();
 	}
 	
 	@Override
 	public void onDisable() {
-		
+		hubDisableMethods();
 	}
 	
 	//All startup methods
@@ -49,7 +45,7 @@ public class SakuraNetwork extends JavaPlugin {
 		
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+/*	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void registerEntities() {
 		//Register Banker
 		try {
@@ -83,7 +79,7 @@ public class SakuraNetwork extends JavaPlugin {
 			f.set(null, fmap);
 			g.set(null, gmap);
 		} catch(Exception e){}
-	}
+	}*/
 	
 	public void setupCommands() {
 		//Hub Commands
@@ -105,9 +101,20 @@ public class SakuraNetwork extends JavaPlugin {
 		//Create members folder if it doesnt exist
 		File folder = new File(getDataFolder() + "/members");
 		folder.mkdir();
-		getServer().getLogger().info("Created members folder");
+		
+		//Create the hub folder
+		File foldera = new File(getDataFolder() + "/hub");
+		foldera.mkdir();
+	}
+	
+	public void hubEnableMethods() {
+		//Load all the quick warp pads
+		QuickWarp.getInstance().loadPads();
 	}
 	
 	//All Disable methods
 	
+	public void hubDisableMethods() {
+		
+	}
 }

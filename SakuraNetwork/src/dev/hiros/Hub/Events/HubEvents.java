@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -15,7 +16,9 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -23,6 +26,8 @@ import dev.hiros.Economy.EconomyManager;
 import dev.hiros.Hub.HubChat;
 import dev.hiros.Hub.HubManager;
 import dev.hiros.Hub.HubBank.HubBank;
+import dev.hiros.Hub.HubStuff.HubStuff;
+import dev.hiros.Hub.QuickWarp.QuickWarp;
 
 public class HubEvents implements Listener {
 	@EventHandler
@@ -46,6 +51,10 @@ public class HubEvents implements Listener {
 	public void onPlayerBreakBlock(BlockBreakEvent event) {
 		Player player = event.getPlayer();
 		if(HubManager.getInstance().getPlayer(player) != null) {
+			if(player.hasPermission("sakuranetwork.sakuramember") || player.hasPermission("sakuranetwork.admin")) {
+				return;
+			}
+			
 			event.setCancelled(true);
 		}
 	}
@@ -54,6 +63,10 @@ public class HubEvents implements Listener {
 	public void onPlayerPlaceBlocks(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
 		if(HubManager.getInstance().getPlayer(player) != null) {
+			if(player.hasPermission("sakuranetwork.sakuramember") || player.hasPermission("sakuranetwork.admin")) {
+				return;
+			}
+			
 			event.setCancelled(true);
 		}
 	}
@@ -121,6 +134,7 @@ public class HubEvents implements Listener {
 					return;
 				}
 				HubManager.getInstance().dropSakuraCoin(player);
+				event.setCancelled(true);
 				return;
 			}
 			event.setCancelled(true);
@@ -152,5 +166,29 @@ public class HubEvents implements Listener {
 			return;
 		}
 		return;
+	}
+	
+	@EventHandler(priority=EventPriority.HIGH)
+	public void onPlayerRightClickWithItems(PlayerInteractEvent event) {
+		Player player = event.getPlayer();
+		if(HubManager.getInstance().getPlayer(player) != null) {
+			if(player.getItemInHand().getType() == Material.SLIME_BALL) {
+				QuickWarp.getInstance().openInventory(player);
+			}
+			
+			//Hub stuff item
+			if(player.getItemInHand().getType() == Material.NETHER_STAR) {
+				HubStuff.getInstance().openInventory(player);
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerMoveOverPad(PlayerMoveEvent event) {
+		Player player = event.getPlayer();
+		if(HubManager.getInstance().getPlayer(player) != null) {
+			//Check if player has walked over a pad. *! MIGHT BE CPU INTENSIVE - Try to optimize
+			QuickWarp.getInstance().checkPlayerOnPad(player);
+		}
 	}
 }

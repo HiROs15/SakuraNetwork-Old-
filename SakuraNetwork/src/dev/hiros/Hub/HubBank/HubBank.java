@@ -1,20 +1,18 @@
 package dev.hiros.Hub.HubBank;
 
-import net.minecraft.server.v1_8_R1.EntityVillager;
+import me.dablakbandit.customentitiesapi.entities.CustomEntities;
+import me.dablakbandit.customentitiesapi.entities.CustomEntityVillager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.inventory.ItemStack;
 
 import dev.hiros.SakuraNetwork;
 import dev.hiros.Economy.EconomyManager;
 import dev.hiros.Hub.HubScoreboard;
-import dev.hiros.Hub.HubBank.NMS.EntityBanker;
 import dev.hiros.Utils.ItemMenu;
 public class HubBank {
 	public ItemMenu bankerInv;
@@ -26,12 +24,15 @@ public class HubBank {
 	}
 	
 	public void spawnBanker(Player player, Location loc, int bankerid) {
-		CraftWorld handle = (CraftWorld) loc.getWorld();
-		EntityVillager banker = new EntityBanker(handle.getHandle(), 0);
-		banker.setPosition(loc.getX(), loc.getY(), loc.getZ());
+		CustomEntityVillager banker = CustomEntities.getNewCustomEntityVillager(player.getLocation());
+		banker.removeGoalSelectorPathfinderGoalAll();
 		banker.setCustomName(ChatColor.GOLD+""+ChatColor.BOLD+"Sakura Banker");
 		banker.setCustomNameVisible(true);
-		handle.getHandle().addEntity(banker, SpawnReason.CUSTOM);
+		banker.setAbleToMove(false);
+		banker.setPushable(false);
+		banker.setTradeable(false);
+		banker.newGoalSelectorPathfinderGoalInteractDefault();
+		banker.teleportTo(player.getLocation());
 	}
 	
 	public void openBankerInv(final Player player) {

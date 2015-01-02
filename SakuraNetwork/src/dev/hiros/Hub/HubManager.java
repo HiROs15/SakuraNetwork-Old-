@@ -14,6 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 
 import dev.hiros.SakuraNetwork;
+import dev.hiros.Bungee.Bungee;
 import dev.hiros.Economy.EconomyManager;
 
 public class HubManager {
@@ -24,6 +25,7 @@ public class HubManager {
 	
 	ArrayList<HubPlayer> hubPlayers = new ArrayList<HubPlayer>();
 	
+	@SuppressWarnings("deprecation")
 	public void joinHub(Player player) {
 		if(getPlayer(player) != null) {
 			player.sendMessage(ChatColor.GREEN+"SYSTEM> "+ChatColor.GRAY+"You are already in the hub.");
@@ -42,7 +44,11 @@ public class HubManager {
 		setupHubInventory(player);
 		
 		//Change player mode to adventure
-		player.setGameMode(GameMode.ADVENTURE);
+		if(player.hasPermission("sakuranetwork.sakuramember") || player.hasPermission("sakuranetwork.admin") || player.hasPermission("sakuranetwork.mod")) {
+			player.setGameMode(GameMode.CREATIVE);
+		} else {
+			player.setGameMode(GameMode.ADVENTURE);
+		}
 		
 		//Setup the economy for the player joining the hub
 		EconomyManager.getInstance().setupEconomyForPlayer(player);
@@ -53,11 +59,24 @@ public class HubManager {
 		//Set the hub texture pack
 		player.setResourcePack("http://sakurapack.x10.mx/HubPack1.zip");
 		
+		//Start the particle effects
+		HubParticles.getInstance().startRunningParticle(player);
+		
 		//Check if they are a sakura member and play the sound
 		if(player.hasPermission("sakuranetwork.sakuramember")) {
 			for(HubPlayer p : hubPlayers) {
 				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "playsound hub.sakuramember_join "+p.getPlayer().getName()+" "+p.getPlayer().getLocation().getX()+" "+p.getPlayer().getLocation().getY()+" "+p.getPlayer().getLocation().getZ()+" 100 1 1");
 				p.getPlayer().sendMessage(ChatColor.RED+""+ChatColor.BOLD+"ATTENTION "+ChatColor.RESET+""+ChatColor.BLUE+""+player.getName()+" has just entered the hub!");
+			}
+		}
+		
+		//Bungee the players
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			if(getPlayer(p) == null) {
+				Bungee.getInstance().hidePlayers(player, p);
+			}
+			else if(getPlayer(p) != null) {
+				Bungee.getInstance().showPlayers(player, p);
 			}
 		}
 	}
@@ -96,9 +115,9 @@ public class HubManager {
 		player.getInventory().setItem(0, createItem(Material.SLIME_BALL, ChatColor.AQUA+"Quick Warp"));
 		player.getInventory().setItem(4, createItem(Material.EMERALD, ChatColor.GOLD+"Sakura Shop"));
 		player.getInventory().setItem(8, createItem(Material.REDSTONE_BLOCK, ChatColor.BLUE+"Settings"));
-		int rand = (int) (Math.random()*999999);
-		String coinname = ChatColor.LIGHT_PURPLE+""+ChatColor.BOLD+"Coin"+rand;
+		String coinname = ChatColor.LIGHT_PURPLE+""+ChatColor.BOLD+"Coin"+ChatColor.RESET+""+ChatColor.GRAY+" (Press Q to drop)";
 		player.getInventory().setItem(2, createItem(Material.COAL, coinname));
+		player.getInventory().setItem(7, createItem(Material.NETHER_STAR, ChatColor.RED+""+ChatColor.BOLD+"My Stuff "+ChatColor.RESET+""+ChatColor.GRAY+"(Right Clcik)"));
 	}
 	
 	public void setupHubBossBar(Player player) {
@@ -115,7 +134,16 @@ public class HubManager {
 	
 	public void dropSakuraCoin(Player player) {
 		if(EconomyManager.getInstance().getCoins(player) > 0) {
-			setupHubInventory(player);
+			//spawn the item
+			Location coinLoc = player.getLocation().add(0, 1, 0);
+			int rand = (int)(Math.random()*99999999);
+			
+			Item coin = player.getLocation().getWorld().dropItem(coinLoc, new ItemStack(Material.COAL));
+			ItemMeta meta = coin.getItemStack().getItemMeta();
+			meta.setDisplayName("Coin"+rand);
+			coin.getItemStack().setItemMeta(meta);
+			coin.setVelocity(coinLoc.getDirection().multiply(0.8));
+			
 			EconomyManager.getInstance().setCoins(player, EconomyManager.getInstance().getCoins(player)-1);
 			
 			//update the hub scoreboard
@@ -124,7 +152,7 @@ public class HubManager {
 			
 			//Play the cash sound to all hub players
 			for(HubPlayer p : hubPlayers) {
-				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "playsound hub.cash "+p.getPlayer().getName()+" "+player.getLocation().getX()+" "+player.getLocation().getY()+" "+player.getLocation().getZ()+" 100 1 1");
+				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "playsound hub.cash "+p.getPlayer().getName()+" "+player.getLocation().getX()+" "+player.getLocation().getY()+" "+player.getLocation().getZ()+" 1.2");
 			}
 		}
 	}
@@ -140,7 +168,7 @@ public class HubManager {
 		
 		//play the cash sound
 		for(HubPlayer p : hubPlayers) {
-			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "playsound hub.cash "+p.getPlayer().getName()+" "+player.getLocation().getX()+" "+player.getLocation().getY()+" "+player.getLocation().getZ()+" 100 1 1");
+			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "playsound hub.cash "+p.getPlayer().getName()+" "+player.getLocation().getX()+" "+player.getLocation().getY()+" "+player.getLocation().getZ()+" 1.2");
 		}
 		
 		SakuraNetwork.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(SakuraNetwork.getInstance(), new Runnable() {
@@ -151,18 +179,24 @@ public class HubManager {
 		}, 1L);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void leaveHub(Player player) {
 		//remove from hubplayers array
-		for(HubPlayer h : hubPlayers) {
-			if(h.getPlayer().equals(player)) {
-				hubPlayers.remove(h);
-			}
-		}
+		hubPlayers.remove(getPlayer(player));
 		
 		player.getInventory().clear();
 		
 		HubScoreboard.getInstance().removeHubScoreboard(player);
 		
 		SakuraNetwork.getInstance().getLogger().info(player.getName()+" has been removed from the hub.");
+		
+		//Bungee the players
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			if(getPlayer(p) != null) {
+				Bungee.getInstance().hidePlayers(p, player);
+			} else if(getPlayer(p) == null) {
+				Bungee.getInstance().showPlayers(player, p);
+			}
+		}
 	}
 }

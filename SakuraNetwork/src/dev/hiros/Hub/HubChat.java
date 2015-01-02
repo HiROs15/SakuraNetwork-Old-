@@ -29,7 +29,7 @@ public class HubChat {
 		
 		//Start sending messages.
 		for(HubPlayer hubplayer : HubManager.getInstance().hubPlayers) {
-			hubplayer.getPlayer().sendMessage(prefix+""+ChatColor.YELLOW+""+hubplayer.getPlayer().getName()+" "+ChatColor.WHITE+""+msg);
+			hubplayer.getPlayer().sendMessage(prefix+""+ChatColor.YELLOW+""+player.getPlayer().getName()+" "+ChatColor.WHITE+""+msg);
 		}
 	}
 }

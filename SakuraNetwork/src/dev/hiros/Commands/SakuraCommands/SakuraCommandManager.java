@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import dev.hiros.SakuraNetwork;
 import dev.hiros.Commands.SakuraCommands.Commands.Sakura_addcoins;
+import dev.hiros.Commands.SakuraCommands.Commands.Sakura_giveparticleeffect;
 import dev.hiros.Commands.SakuraCommands.Commands.Sakura_sakura;
 
 public class SakuraCommandManager implements CommandExecutor {
@@ -22,6 +23,7 @@ public class SakuraCommandManager implements CommandExecutor {
 	
 	public SakuraCommandManager() {
 		cmds.add(new Sakura_addcoins());
+		cmds.add(new Sakura_giveparticleeffect());
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
