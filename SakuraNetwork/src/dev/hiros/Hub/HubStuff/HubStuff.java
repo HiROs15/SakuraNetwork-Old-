@@ -50,7 +50,7 @@ public class HubStuff {
 			}
 		}, SakuraNetwork.getInstance());
 		//Load my particles effects
-		FileConfiguration config = Config.getInstance().getConfig("/members/"+player.getUniqueId().toString()+".sakuradata");
+		FileConfiguration config = Config.getInstance().getConfig("/members/"+player.getName()+".dat");
 		int index = 0;
 		if(config.getConfigurationSection("stuff.mystuff.particles") == null) {
 			for(int i = 0;i<54;i++) {
@@ -76,7 +76,7 @@ public class HubStuff {
 	}
 	
 	public void toggleParticleEffect(Player player, String effect) {
-		String path = "/members/"+player.getUniqueId().toString()+".sakuradata";
+		String path = "/members/"+player.getName()+".yml";
 		FileConfiguration config = Config.getInstance().getConfig(path);
 		
 		if(config.getString("hub.particles.set") == effect) {

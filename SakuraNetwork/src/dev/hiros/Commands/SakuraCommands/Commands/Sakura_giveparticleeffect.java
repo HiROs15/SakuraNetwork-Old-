@@ -18,9 +18,9 @@ public class Sakura_giveparticleeffect extends SakuraPluginCommand {
 				player.sendMessage(ChatColor.GREEN+"SYSTEM> "+ChatColor.GRAY+"You are missing arguments.");
 				return;
 			}
-			FileConfiguration config = Config.getInstance().getConfig("/members/"+Bukkit.getServer().getPlayer(args[1]).getUniqueId().toString()+".sakuradata");
+			FileConfiguration config = Config.getInstance().getConfig("/members/"+Bukkit.getServer().getPlayer(args[1]).getName()+".dat");
 			config.set("stuff.mystuff.particles."+args[2]+"", true);
-			Config.getInstance().saveConfig("/members/"+Bukkit.getServer().getPlayer(args[1]).getUniqueId().toString()+".sakuradata");
+			Config.getInstance().saveConfig("/members/"+Bukkit.getServer().getPlayer(args[1]).getName()+".dat");
 			
 			player.sendMessage(ChatColor.GREEN+"SYSTEM> "+ChatColor.GRAY+"You have given the particle effect.");
 			return;

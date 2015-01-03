@@ -10,7 +10,7 @@ public class EconomyManager {
 	}
 	
 	public void setupEconomyForPlayer(Player player) {
-		String path = "/members/"+player.getUniqueId().toString()+".sakuradata";
+		String path = "/members/"+player.getName()+".yml";
 		if(Config.getInstance().getConfig(path).getBoolean("economy.setup") != true) {
 			Config.getInstance().getConfig(path).set("economy.setup", true);
 			Config.getInstance().getConfig(path).set("economy.credits", 500);
@@ -20,21 +20,21 @@ public class EconomyManager {
 	}
 	
 	public int getCoins(Player player) {
-		return Config.getInstance().getConfig("/members/"+player.getUniqueId().toString()+".sakuradata").getInt("economy.coins");
+		return Config.getInstance().getConfig("/members/"+player.getName()+".yml").getInt("economy.coins");
 	}
 	
 	public int getCredits(Player player) {
-		return Config.getInstance().getConfig("/members/"+player.getUniqueId().toString()+".sakuradata").getInt("economy.credits");
+		return Config.getInstance().getConfig("/members/"+player.getName()+".yml").getInt("economy.credits");
 	}
 	
 	public void setCredits(Player player, int value) {
-		String path = "/members/"+player.getUniqueId().toString()+".sakuradata";
+		String path = "/members/"+player.getName()+".yml";
 		Config.getInstance().getConfig(path).set("economy.credits", value);
 		Config.getInstance().saveConfig(path);
 	}
 	
 	public void setCoins(Player player, int value) {
-		String path = "/members/"+player.getUniqueId().toString()+".sakuradata";
+		String path = "/members/"+player.getName()+".yml";
 		Config.getInstance().getConfig(path).set("economy.coins", value);
 		Config.getInstance().saveConfig(path);
 	}
