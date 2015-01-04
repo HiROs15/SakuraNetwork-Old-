@@ -60,15 +60,16 @@ public class QuickWarp {
 	}
 	
 	public void warp(Player player, int id) {
-		String path = "/hub/quickwarpdata.sakuradata";
+		String path = "/hub/quickwarp.dat";
 		String way = "quickwarp."+id+".location";
+		Config inst = Config.getInstance();
 		Location loc = new Location(
-				Bukkit.getServer().getWorld(Config.getInstance().getConfig(path).getString(way+".world")),
-				Config.getInstance().getConfig(path).getDouble(way+".x"),
-				Config.getInstance().getConfig(path).getDouble(way+".y"),
-				Config.getInstance().getConfig(path).getDouble(way+".z"),
-				(float) Config.getInstance().getConfig(path).getDouble(way+".yaw"),
-				(float) Config.getInstance().getConfig(path).getDouble(way+".pitch")
+				Bukkit.getServer().getWorld(inst.getConfig(path).getString(way+".world")),
+				inst.getConfig(path).getDouble(way+".x"),
+				inst.getConfig(path).getDouble(way+".y"),
+				inst.getConfig(path).getDouble(way+".z"),
+				(float) inst.getConfig(path).getDouble(way+".yaw"),
+				(float) inst.getConfig(path).getDouble(way+".pitch")
 				);
 		player.teleport(loc);
 	}

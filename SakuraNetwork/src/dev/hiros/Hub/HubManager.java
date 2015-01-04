@@ -57,7 +57,7 @@ public class HubManager {
 		HubScoreboard.getInstance().showHubScoreboard(player);
 		
 		//Set the hub texture pack
-		player.setResourcePack("http://sakurapack.x10.mx/HubPack1.zip");
+		player.setResourcePack("http://sakurapack.x10.mx/HubPack5.zip");
 		
 		//Start the particle effects
 		HubParticles.getInstance().startRunningParticle(player);

@@ -27,6 +27,7 @@ import dev.hiros.Hub.HubChat;
 import dev.hiros.Hub.HubManager;
 import dev.hiros.Hub.HubBank.HubBank;
 import dev.hiros.Hub.HubStuff.HubStuff;
+import dev.hiros.Hub.Parkour.ParkourManager;
 import dev.hiros.Hub.QuickWarp.QuickWarp;
 
 public class HubEvents implements Listener {
@@ -163,6 +164,12 @@ public class HubEvents implements Listener {
 				event.setCancelled(true);
 				return;
 			}
+			
+			//Parkour mobs
+			if(event.getRightClicked().getType() == EntityType.SKELETON && ParkourManager.getInstance().checkIfParkourMobExists(event.getRightClicked().getCustomName())) {
+				event.setCancelled(true);
+				ParkourManager.getInstance().joinParkourMode(player);
+			}
 			return;
 		}
 		return;
@@ -184,9 +191,12 @@ public class HubEvents implements Listener {
 	}
 	
 	@EventHandler
-	public void onPlayerMoveOverPad(PlayerMoveEvent event) {
+	public void onPlayerMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		if(HubManager.getInstance().getPlayer(player) != null) {
+			if(ParkourManager.getInstance().getPlayer(player.getName()) != null) {
+				ParkourManager.getInstance().checkPlayerDistanceFromBlock(player);
+			}
 			//Check if player has walked over a pad. *! MIGHT BE CPU INTENSIVE - Try to optimize
 			QuickWarp.getInstance().checkPlayerOnPad(player);
 		}

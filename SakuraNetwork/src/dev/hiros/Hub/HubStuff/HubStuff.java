@@ -47,6 +47,18 @@ public class HubStuff {
 				if(event.getName().equals(ChatColor.LIGHT_PURPLE+"Sakura Member Particle Effect")) {
 					toggleParticleEffect(player, "sakuramember");
 				}
+				
+				if(event.getName().equals(ChatColor.GREEN+"Green Particles")) {
+					toggleParticleEffect(player, "greenparticles");
+				}
+				
+				if(event.getName().equals(ChatColor.DARK_BLUE+"Blue Particles")) {
+					toggleParticleEffect(player, "blueparticles");
+				}
+				
+				if(event.getName().equals(ChatColor.DARK_PURPLE+"Ender Particles")) {
+					toggleParticleEffect(player, "enderparticles");
+				}
 			}
 		}, SakuraNetwork.getInstance());
 		//Load my particles effects
@@ -61,9 +73,10 @@ public class HubStuff {
 			}
 		}
 		
+		//SakuraMember Particle effect
 		if(config.getConfigurationSection("stuff.mystuff.particles") != null && config.getBoolean("stuff.mystuff.particles.sakuramember") != false) {
 			Dye dye = new Dye();
-			if(config.getString("hub.particles.set") != "sakuramember") {
+			if(!config.getString("hub.particles.set").equals("sakuramember")) {
 				dye.setColor(DyeColor.GRAY);
 			} else {
 				dye.setColor(DyeColor.PINK);
@@ -72,21 +85,60 @@ public class HubStuff {
 			index++;
 		}
 		
+		//Green Particles Particle Effect
+		if(config.getConfigurationSection("stuff.mystuff.particles") != null && config.getBoolean("stuff.mystuff.particles.greenparticles") != false) {
+			Dye dye = new Dye();
+			if(!config.getString("hub.particles.set").equals("greenparticles")) {
+				dye.setColor(DyeColor.GRAY);
+			} else {
+				dye.setColor(DyeColor.PINK);
+			}
+			particleMenu.setOption(index, dye.toItemStack(1), ChatColor.GREEN+"Green Particles");
+			index++;
+		}
+		
+		//Blue Particles Particle Effect
+		if(config.getConfigurationSection("stuff.mystuff.particles") != null && config.getBoolean("stuff.mystuff.particles.blueparticles") != false) {
+			Dye dye = new Dye();
+			if(!config.getString("hub.particles.set").equals("blueparticles")) {
+				dye.setColor(DyeColor.GRAY);
+			} else {
+				dye.setColor(DyeColor.PINK);
+			}
+			particleMenu.setOption(index, dye.toItemStack(1), ChatColor.DARK_BLUE+"Blue Particles");
+			index++;
+		}
+		
+		//Ender Particles Particle Effect
+		if(config.getConfigurationSection("stuff.mystuff.particles") != null && config.getBoolean("stuff.mystuff.particles.enderparticles") != false) {
+			Dye dye = new Dye();
+			if(!config.getString("hub.particles.set").equals("enderparticles")) {
+				dye.setColor(DyeColor.GRAY);
+			} else {
+				dye.setColor(DyeColor.PINK);
+			}
+			particleMenu.setOption(index, dye.toItemStack(1), ChatColor.DARK_PURPLE+"Ender Particles");
+			index++;
+		}
+		
 		particleMenu.open(player);
 	}
 	
 	public void toggleParticleEffect(Player player, String effect) {
-		String path = "/members/"+player.getName()+".yml";
-		FileConfiguration config = Config.getInstance().getConfig(path);
+		String path = "/members/"+player.getName()+".dat";
+		Config inst = Config.getInstance();
+		FileConfiguration config = inst.getConfig(path);
 		
-		if(config.getString("hub.particles.set") == effect) {
+		if(config.getString("hub.particles.set").equals(effect)) {
 			config.set("hub.particles.set", "none");
-			Config.getInstance().saveConfig(path);
+			inst.saveConfig(path);
+			inst.reloadConfig(path);
 			
 			player.sendMessage(ChatColor.GREEN+"SYSTEM> "+ChatColor.GRAY+"You have removed your particle effect.");
 		} else {
-			config.set("hub.particles.set", effect);
-			Config.getInstance().saveConfig(path);
+			config.set("hub.particles.set", ""+effect);
+			inst.saveConfig(path);
+			inst.reloadConfig(path);
 			
 			player.sendMessage(ChatColor.GREEN+"SYSTEM> "+ChatColor.GRAY+"You have set a particle effect.");
 		}

@@ -12,7 +12,8 @@ public class QuickWarpPad {
 	private String padName;
 	
 	public QuickWarpPad(String padName) {
-		FileConfiguration config = Config.getInstance().getConfig("/hub/quickwarp.data");
+		Config inst = Config.getInstance();
+		FileConfiguration config = inst.getConfig("/hub/quickwarp.dat");
 		Location l = new Location(
 					Bukkit.getServer().getWorld(config.getString("pads."+padName+".location.world")),
 					config.getDouble("pads."+padName+".location.x"),

@@ -10,6 +10,7 @@ import dev.hiros.Commands.HubCommands.HubCommandManager;
 import dev.hiros.Commands.SakuraCommands.SakuraCommandManager;
 import dev.hiros.Hub.HubSetup;
 import dev.hiros.Hub.Events.HubEvents;
+import dev.hiros.Hub.Parkour.ParkourManager;
 import dev.hiros.Hub.QuickWarp.QuickWarp;
 import dev.hiros.ServerStats.Events.ServerStatsEvents;
 
@@ -105,16 +106,32 @@ public class SakuraNetwork extends JavaPlugin {
 		//Create the hub folder
 		File foldera = new File(getDataFolder() + "/hub");
 		foldera.mkdir();
+		
+		//Create minigames folder
+		File folderb = new File(getDataFolder() + "/minigames");
+		folderb.mkdir();
+		
+		//Create PvpParkour folder
+		File folderc = new File(getDataFolder() + "/minigames/pvpparkour");
+		folderc.mkdir();
 	}
 	
 	public void hubEnableMethods() {
 		//Load all the quick warp pads
 		QuickWarp.getInstance().loadPads();
+		
+		//Respawn parkour mobs
+		ParkourManager.getInstance().reloadParkourMobs();
+		
+		//Load all parkour blocks
+		ParkourManager.getInstance().loadParkourBlocks();
 	}
 	
 	//All Disable methods
 	
 	public void hubDisableMethods() {
+		//Remove Parkour Mobs
+		ParkourManager.getInstance().removeParkourMobs();
 		
 	}
 }

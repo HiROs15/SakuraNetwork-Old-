@@ -8,13 +8,15 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import dev.hiros.SakuraNetwork;
 
 public class Config {
-	private static Config inst = new Config();
 	public static Config getInstance() {
-		return inst;
+		return new Config();
 	}
 	
-	private File file = null;
-	private FileConfiguration config = null;
+	public FileConfiguration config = null;
+	public File file = null;
+	
+	public Config() {
+	}
 	
 	public void reloadConfig(String path) {
 		if(file == null) {

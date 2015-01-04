@@ -19,7 +19,8 @@ public class Hub_setquickwarppad extends HubPluginCommand {
 			}
 			
 			//Save the file to the config.
-			FileConfiguration config = Config.getInstance().getConfig("/hub/quickwarp.dat");
+			Config inst = Config.getInstance();
+			FileConfiguration config = inst.getConfig("/hub/quickwarp.dat");
 			config.set("pads."+args[2]+".gameid", Integer.parseInt(args[1]));
 			config.set("pads."+args[2]+".location.world", player.getLocation().getWorld().getName());
 			config.set("pads."+args[2]+".location.x", player.getLocation().getX());
@@ -27,7 +28,7 @@ public class Hub_setquickwarppad extends HubPluginCommand {
 			config.set("pads."+args[2]+".location.z", player.getLocation().getZ());
 			config.set("pads."+args[2]+".location.yaw", player.getLocation().getYaw());
 			config.set("pads."+args[2]+".location.pitch", player.getLocation().getPitch());
-			Config.getInstance().saveConfig("/hub/quickwarp.dat");
+			inst.saveConfig("/hub/quickwarp.dat");
 			
 			player.sendMessage(ChatColor.GREEN+"SYSTEM> "+ChatColor.GRAY+"You have setup a pad.");
 			return;

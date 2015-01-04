@@ -18,16 +18,17 @@ public class HubParticles {
 	
 	public void startRunningParticle(final Player player) {
 		final FileConfiguration config = Config.getInstance().getConfig("/members/"+player.getName()+".dat");
-		if(config.getString("hub.particles.set") != "none" || config.getString("hub.particles.set") != null) {
+		if(config.getString("hub.particles.set") != null) {
 			particleid = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(SakuraNetwork.getInstance(), new Runnable() {
 				@Override
 				public void run() {
+					FileConfiguration configa = Config.getInstance().getConfig("/members/"+player.getName()+".dat");
 					if(HubManager.getInstance().getPlayer(player) == null) {
 						Bukkit.getServer().getScheduler().cancelTask(particleid);
-						return;
 					}
 					//All the particles
-					if(config.getString("hub.particles.set") == "sakuramember") {
+					//SakuraMember particles
+					if(configa.getString("hub.particles.set").equals("sakuramember")) {
 						try {
 							ParticleEffect.CLOUD.display((float)0.2, 0, (float)0.2, 0, 5, player.getLocation(), 16);
 							ParticleEffect.FLAME.display((float)0.5, 0, (float)0.5, (float)0.05, 2, player.getLocation().add(0, 2, 0), 16);
@@ -35,6 +36,27 @@ public class HubParticles {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+					}
+					
+					//Green Particles
+					else if(configa.getString("hub.particles.set").equals("greenparticles")) {
+						try {
+							ParticleEffect.VILLAGER_HAPPY.display((float) 0.1, (float) 0.2, (float) 0.1, 0, 4, player.getLocation().add(0, 1, 0), 16);
+						} catch(Exception e){}
+					}
+					
+					//Blue Particles
+					else if(configa.getString("hub.particles.set").equals("blueparticles")) {
+						try {
+							ParticleEffect.WATER_SPLASH.display((float) 0.1, (float) 0.2, (float) 0.1, 0, 10, player.getLocation().add(0, 1, 0), 16);
+						} catch(Exception e) {}
+					}
+					
+					//Ender Particles
+					else if(configa.getString("hub.particles.set").equals("enderparticles")) {
+						try {
+							ParticleEffect.PORTAL.display((float) 0.5, (float)0, (float)0.5, (float)0.4, 8, player.getLocation().add(0, 0, 0), 16);
+						} catch(Exception e) {}
 					}
 				}
 			}, 0, 1);

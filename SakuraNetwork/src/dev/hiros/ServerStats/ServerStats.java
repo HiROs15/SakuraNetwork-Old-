@@ -9,6 +9,6 @@ public class ServerStats {
 	}
 	
 	//Hard coded server stats
-	public String motd = ChatColor.LIGHT_PURPLE+""+ChatColor.BOLD+"SakuraNetwork"+ChatColor.RESET+" "+ChatColor.AQUA+"Minigames, Economy, No Lag";
+	public String motd = ChatColor.LIGHT_PURPLE+"SakuraNetwork"+ChatColor.GOLD+" | "+ChatColor.AQUA+"Server under development \n"+ChatColor.BLUE+""+ChatColor.BOLD+"★"+ChatColor.YELLOW+""+ChatColor.BOLD+"Minigames, Survival Games, Custom Maps"+ChatColor.BLUE+""+ChatColor.BOLD+"★";
 	public int slots = 2000;
 }

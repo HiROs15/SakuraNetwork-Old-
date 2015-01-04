@@ -16,15 +16,16 @@ public class Hub_setquickwarp extends HubPluginCommand {
 				player.sendMessage(ChatColor.GREEN+"SYSTEM> "+ChatColor.GRAY+"You need to specify the warp id.");
 				return;
 			}
-			String path = "/hub/quickwarpdata.sakuradata";
+			String path = "/hub/quickwarp.dat";
+			Config inst = Config.getInstance();
 			
-			Config.getInstance().getConfig(path).set("quickwarp."+args[1]+".location.world", player.getLocation().getWorld().getName());
-			Config.getInstance().getConfig(path).set("quickwarp."+args[1]+".location.x", player.getLocation().getX());
-			Config.getInstance().getConfig(path).set("quickwarp."+args[1]+".location.y", player.getLocation().getY());
-			Config.getInstance().getConfig(path).set("quickwarp."+args[1]+".location.z", player.getLocation().getZ());
-			Config.getInstance().getConfig(path).set("quickwarp."+args[1]+".location.yaw", player.getLocation().getYaw());
-			Config.getInstance().getConfig(path).set("quickwarp."+args[1]+".location.pitch", player.getLocation().getPitch());
-			Config.getInstance().saveConfig(path);
+			inst.getConfig(path).set("quickwarp."+args[1]+".location.world", player.getLocation().getWorld().getName());
+			inst.getConfig(path).set("quickwarp."+args[1]+".location.x", player.getLocation().getX());
+			inst.getConfig(path).set("quickwarp."+args[1]+".location.y", player.getLocation().getY());
+			inst.getConfig(path).set("quickwarp."+args[1]+".location.z", player.getLocation().getZ());
+			inst.getConfig(path).set("quickwarp."+args[1]+".location.yaw", player.getLocation().getYaw());
+			inst.getConfig(path).set("quickwarp."+args[1]+".location.pitch", player.getLocation().getPitch());
+			inst.saveConfig(path);
 			
 			player.sendMessage(ChatColor.GREEN+"SYSTEM> "+ChatColor.GRAY+"You have set the quick warp for "+args[1]+".");
 			return;

@@ -1,6 +1,8 @@
 package dev.hiros.Economy;
 
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+
 import dev.hiros.Config.Config;
 
 public class EconomyManager {
@@ -10,32 +12,36 @@ public class EconomyManager {
 	}
 	
 	public void setupEconomyForPlayer(Player player) {
-		String path = "/members/"+player.getName()+".yml";
-		if(Config.getInstance().getConfig(path).getBoolean("economy.setup") != true) {
-			Config.getInstance().getConfig(path).set("economy.setup", true);
-			Config.getInstance().getConfig(path).set("economy.credits", 500);
-			Config.getInstance().getConfig(path).set("economy.coins", 5);
-			Config.getInstance().saveConfig(path);
+		String path = "/members/"+player.getName()+".dat";
+		Config inst = Config.getInstance();
+		FileConfiguration config = inst.getConfig(path);
+		if(config.getBoolean("economy.setup") != true) {
+			config.set("economy.setup", true);
+			config.set("economy.credits", 0);
+			config.set("economy.coins", 5);
+			inst.saveConfig(path);
 		}
 	}
 	
 	public int getCoins(Player player) {
-		return Config.getInstance().getConfig("/members/"+player.getName()+".yml").getInt("economy.coins");
+		return Config.getInstance().getConfig("/members/"+player.getName()+".dat").getInt("economy.coins");
 	}
 	
 	public int getCredits(Player player) {
-		return Config.getInstance().getConfig("/members/"+player.getName()+".yml").getInt("economy.credits");
+		return Config.getInstance().getConfig("/members/"+player.getName()+".dat").getInt("economy.credits");
 	}
 	
 	public void setCredits(Player player, int value) {
-		String path = "/members/"+player.getName()+".yml";
-		Config.getInstance().getConfig(path).set("economy.credits", value);
-		Config.getInstance().saveConfig(path);
+		String path = "/members/"+player.getName()+".dat";
+		Config inst = Config.getInstance();
+		inst.getConfig(path).set("economy.credits", value);
+		inst.saveConfig(path);
 	}
 	
 	public void setCoins(Player player, int value) {
-		String path = "/members/"+player.getName()+".yml";
-		Config.getInstance().getConfig(path).set("economy.coins", value);
-		Config.getInstance().saveConfig(path);
+		String path = "/members/"+player.getName()+".dat";
+		Config inst = Config.getInstance();
+		inst.getConfig(path).set("economy.coins", value);
+		inst.saveConfig(path);
 	}
 }
