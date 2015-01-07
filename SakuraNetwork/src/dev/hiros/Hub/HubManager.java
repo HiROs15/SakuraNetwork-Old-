@@ -112,12 +112,12 @@ public class HubManager {
 	public void setupHubInventory(Player player) {
 		player.getInventory().clear();
 		
-		player.getInventory().setItem(0, createItem(Material.SLIME_BALL, ChatColor.AQUA+"Quick Warp"));
-		player.getInventory().setItem(4, createItem(Material.EMERALD, ChatColor.GOLD+"Sakura Shop"));
-		player.getInventory().setItem(8, createItem(Material.REDSTONE_BLOCK, ChatColor.BLUE+"Settings"));
+		player.getInventory().setItem(0, createItem(Material.SLIME_BALL, ChatColor.AQUA+""+ChatColor.BOLD+"Quick Warp "+ChatColor.RESET+""+ChatColor.GRAY+"(Right Click)"));
+		player.getInventory().setItem(4, createItem(Material.EMERALD, ChatColor.GOLD+""+ChatColor.BOLD+"Sakura Shop "+ChatColor.RESET+""+ChatColor.GRAY+"(Right Click)"));
+		player.getInventory().setItem(8, createItem(Material.REDSTONE_BLOCK, ChatColor.BLUE+""+ChatColor.BOLD+"Settings "+ChatColor.RESET+""+ChatColor.GRAY+"(Right Click)"));
 		String coinname = ChatColor.LIGHT_PURPLE+""+ChatColor.BOLD+"Coin"+ChatColor.RESET+""+ChatColor.GRAY+" (Press Q to drop)";
 		player.getInventory().setItem(2, createItem(Material.COAL, coinname));
-		player.getInventory().setItem(7, createItem(Material.NETHER_STAR, ChatColor.RED+""+ChatColor.BOLD+"My Stuff "+ChatColor.RESET+""+ChatColor.GRAY+"(Right Clcik)"));
+		player.getInventory().setItem(7, createItem(Material.NETHER_STAR, ChatColor.RED+""+ChatColor.BOLD+"My Stuff "+ChatColor.RESET+""+ChatColor.GRAY+"(Right Click)"));
 	}
 	
 	public void setupHubBossBar(Player player) {

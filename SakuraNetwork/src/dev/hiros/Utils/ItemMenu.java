@@ -66,7 +66,7 @@ public class ItemMenu implements Listener {
             int slot = event.getRawSlot();
             if (slot >= 0 && slot < size && optionNames[slot] != null) {
                 Plugin plugin = this.plugin;
-                OptionClickEvent e = new OptionClickEvent((Player)event.getWhoClicked(), slot, optionNames[slot]);
+                OptionClickEvent e = new OptionClickEvent((Player)event.getWhoClicked(), slot, this.optionNames[slot]);
                 handler.onOptionClick(e);
                 if (e.willClose()) {
                     final Player p = (Player)event.getWhoClicked();
@@ -84,9 +84,9 @@ public class ItemMenu implements Listener {
     }
     
     @EventHandler
-    void onInventoryExit(InventoryCloseEvent event) {
+    public void onInventoryClose(InventoryCloseEvent event) {
     	if(event.getInventory().getTitle().equals(name)) {
-    		destroy();
+    		this.destroy();
     	}
     }
     

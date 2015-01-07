@@ -8,12 +8,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 
 import dev.hiros.SakuraNetwork;
+import dev.hiros.Config.Config;
 import dev.hiros.Economy.EconomyManager;
 import dev.hiros.Hub.HubScoreboard;
 import dev.hiros.Utils.ItemMenu;
+import dev.hiros.Utils.LocationConfig;
 public class HubBank {
 	public ItemMenu bankerInv;
 	
@@ -32,7 +35,14 @@ public class HubBank {
 		banker.setPushable(false);
 		banker.setTradeable(false);
 		banker.newGoalSelectorPathfinderGoalInteractDefault();
-		banker.teleportTo(player.getLocation());
+		
+		Villager villagerbanker = (Villager) banker.getBukkitEntity();
+		villagerbanker.setRemoveWhenFarAway(false);
+		
+		//Save banker to location
+		String file = "/hub/bankers.dat";
+		Config inst = Config.getInstance();
+		LocationConfig.getInstance().setLocation(inst, player.getLocation(), file, "bankers.banker"+bankerid+"");
 	}
 	
 	public void openBankerInv(final Player player) {

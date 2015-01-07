@@ -22,6 +22,7 @@ public class Hub_spawnbanker extends HubPluginCommand {
 		}
 		
 		HubBank.getInstance().spawnBanker(player, player.getLocation(), Integer.parseInt(args[1]));
+		player.sendMessage(ChatColor.GREEN+"You have spawn a hub banker!");
 		return;
 	}
 }

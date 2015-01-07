@@ -1,6 +1,7 @@
 package dev.hiros.Hub.QuickWarp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,6 +22,8 @@ public class QuickWarp {
 	}
 	
 	public ArrayList<QuickWarpPad> quickWarpPads = new ArrayList<QuickWarpPad>();
+	
+	HashMap<String, QuickWarpPad> gameMenuTimer = new HashMap<String, QuickWarpPad>();
 	
 	public void openInventory(Player player) {
 		ItemMenu quickwarpinv = new ItemMenu(9, ChatColor.LIGHT_PURPLE+"Quick Warp", new ItemMenu.OptionClickEventHandler() {
@@ -80,26 +83,59 @@ public class QuickWarp {
 		}
 	}
 	
+	public boolean isPlayerGameMenuTimeing(Player player) {
+		return gameMenuTimer.containsKey(player.getName());
+	}
+	
 	public void checkPlayerOnPad(Player player) {
 		for(QuickWarpPad p : quickWarpPads) {
-			if(player.getLocation().distanceSquared(p.getLocation()) < 1) {
+			if(player.getLocation().distance(p.getLocation()) < 1) {
+				if(isPlayerGameMenuTimeing(player)) {
+					return;
+				}
+				gameMenuTimer.put(player.getName(), p);
 				openGameMenu(player, p.getGameId());
+				return;
+			}
+			
+			if(isPlayerGameMenuTimeing(player)) {
+				if(player.getLocation().distance(gameMenuTimer.get(player.getName()).getLocation()) > 3) {
+					gameMenuTimer.remove(player.getName());
+				}
 			}
 		}
 	}
 	
 	//Main game viewing methos
 	public void openGameMenu(Player player, int id) {
-		ItemMenu menu = new ItemMenu(54, ChatColor.LIGHT_PURPLE+""+ChatColor.BOLD+"Null", new ItemMenu.OptionClickEventHandler() {
+		ItemMenu gameMenu = new ItemMenu(54, ChatColor.LIGHT_PURPLE+""+ChatColor.BOLD+"Choose a Map", new ItemMenu.OptionClickEventHandler() {
+			@Override
 			public void onOptionClick(ItemMenu.OptionClickEvent event) {
 				event.setWillDestroy(true);
+				event.setWillClose(true);
+				
 				HubManager.getInstance().leaveHub(event.getPlayer());
+				
+				//PvpParkour action
+				if(event.getName().equalsIgnoreCase(ChatColor.GREEN+""+ChatColor.BOLD+"Phantom")) {
+					dev.hiros.Minigames.PvpParkour.Lobby.LobbyManager.getInstance().getLobby("phantom").joinLobby(event.getPlayer());
+					return;
+				}
+				
 				HubManager.getInstance().joinHub(event.getPlayer());
 			}
 		}, SakuraNetwork.getInstance());
-		for(int i=0;i<54;i++) {
-			menu.setOption(i, new ItemStack(Material.REDSTONE_BLOCK, 1), ChatColor.RED+""+ChatColor.BOLD+"Server "+i, ChatColor.GRAY+"Error contacting server 192.168.1.1:2556"+i);
+		if(id == 1) {
+			if(dev.hiros.Minigames.PvpParkour.Lobby.LobbyManager.getInstance().findOpenArena("phantom") == "none") {
+				for(int i = 0; i<54; i++) {
+					gameMenu.setOption(i, new ItemStack(Material.REDSTONE_BLOCK, 1), ChatColor.RED+""+ChatColor.BOLD+"No Servers Could be Found");
+				}
+			} else {
+				gameMenu.setOption(0, new ItemStack(Material.EMERALD_BLOCK, 1), ChatColor.GREEN+""+ChatColor.BOLD+"Phantom", ChatColor.GRAY+""+dev.hiros.Minigames.PvpParkour.Lobby.LobbyManager.getInstance().getLobby("phantom").getOnlinePlayers()+"/10", ChatColor.WHITE+"Map: "+ChatColor.YELLOW+"Phantom", ChatColor.WHITE+"Server: "+ChatColor.YELLOW+""+dev.hiros.Minigames.PvpParkour.Lobby.LobbyManager.getInstance().findOpenArena("phantom"));
+			}
 		}
-		menu.open(player);
+		
+		gameMenu.setOption(53, new ItemStack(Material.ARROW, 1), ChatColor.BLUE+""+ChatColor.BOLD+"Return to Hub", ChatColor.GRAY+"Click to return to the hub.");
+		gameMenu.open(player);
 	}
 }

@@ -25,6 +25,7 @@ public class HubParticles {
 					FileConfiguration configa = Config.getInstance().getConfig("/members/"+player.getName()+".dat");
 					if(HubManager.getInstance().getPlayer(player) == null) {
 						Bukkit.getServer().getScheduler().cancelTask(particleid);
+						return;
 					}
 					//All the particles
 					//SakuraMember particles

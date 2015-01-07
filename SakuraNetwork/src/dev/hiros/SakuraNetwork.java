@@ -7,6 +7,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import dev.hiros.Commands.HubCommands.HubCommandManager;
+import dev.hiros.Commands.PvpParkourCommands.PvpParkourCommandManager;
 import dev.hiros.Commands.SakuraCommands.SakuraCommandManager;
 import dev.hiros.Hub.HubSetup;
 import dev.hiros.Hub.Events.HubEvents;
@@ -30,6 +31,8 @@ public class SakuraNetwork extends JavaPlugin {
 		setupDirectories();
 		
 		hubEnableMethods();
+		
+		loadMinigames();
 	}
 	
 	@Override
@@ -88,6 +91,9 @@ public class SakuraNetwork extends JavaPlugin {
 		
 		//Sakura Commands
 		getCommand("sakura").setExecutor(new SakuraCommandManager());
+		
+		//PvpParkour Commands
+		getCommand("pvpparkour").setExecutor(new PvpParkourCommandManager());
 	}
 	
 	public void setupEvents() {
@@ -96,6 +102,9 @@ public class SakuraNetwork extends JavaPlugin {
 		
 		//Server Ping Events
 		getServer().getPluginManager().registerEvents(new ServerStatsEvents(), this);
+		
+		//PvpParkour Events
+		PvpParkourEvents();
 	}
 	
 	public void setupDirectories() {
@@ -127,11 +136,34 @@ public class SakuraNetwork extends JavaPlugin {
 		ParkourManager.getInstance().loadParkourBlocks();
 	}
 	
+	public void loadMinigames() {
+		//PvpParkour
+		loadPvpParkour();
+	}
+	
 	//All Disable methods
 	
 	public void hubDisableMethods() {
 		//Remove Parkour Mobs
 		ParkourManager.getInstance().removeParkourMobs();
 		
+	}
+	
+	
+	//All Minigames Methods
+
+	public void loadPvpParkour() {
+		dev.hiros.Minigames.PvpParkour.Arenas.ArenaManager.getInstance().loadArenas();
+		dev.hiros.Minigames.PvpParkour.Lobby.LobbyManager.getInstance().loadLobbies();
+	}
+	
+	
+	//All Minigames Events
+	public void PvpParkourEvents() {
+		//Lobby Events
+		getServer().getPluginManager().registerEvents(new dev.hiros.Minigames.PvpParkour.Events.LobbyEvents(), this);
+		
+		//Arena Events
+		getServer().getPluginManager().registerEvents(new dev.hiros.Minigames.PvpParkour.Events.ArenaEvents(), this);
 	}
 }
